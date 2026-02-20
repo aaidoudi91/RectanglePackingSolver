@@ -10,8 +10,7 @@ class ChercheurConteneurOptimal:
     tous les rectangles avec succès, la recherche s'arrête et retourne ce conteneur. """
 
     def __init__(self, rectangles, classe_solveur):
-        """ Initialise le chercheur avec une liste de rectangles et une classe solveur (pas une instance).
-        Exemple : ChercheurConteneurOptimal(rectangles, DFSSolver) """
+        """ Initialise le chercheur avec une liste de rectangles et une classe solveur (pas une instance). """
         self.rectangles = rectangles
         self.classe_solveur = classe_solveur
         self.aire_totale = sum(r.aire() for r in rectangles)
@@ -19,24 +18,30 @@ class ChercheurConteneurOptimal:
         self.hauteur_max = max(r.hauteur for r in rectangles)
 
     def genere_conteneurs_candidats(self, max_candidats=500):
-        """ Génère une liste de conteneurs candidats triés par aire croissante. """
-        candidats = []
+        candidats = set()  # pour éviter les doublons
 
-        borne_inf = math.ceil(math.sqrt(self.aire_totale))
+        # Borne inférieure : plus grand rectangle
+        largeur_min = self.largeur_max
+        hauteur_min = self.hauteur_max
 
-        for largeur in range(max(borne_inf, self.largeur_max), borne_inf + 300):
-            hauteur_min = math.ceil(self.aire_totale / largeur)
+        # Borne supérieure : somme de toutes les largeurs
+        largeur_max_test = sum(r.largeur for r in self.rectangles)
 
-            for height_offset in range(0, 10):
-                hauteur = max(hauteur_min + height_offset, self.hauteur_max)
-                aire = largeur * hauteur
+        for largeur in range(largeur_min, largeur_max_test + 1):
+            # Hauteur minimale : soit la hauteur du plus grand rect, soit ce qui
+            # est nécessaire pour contenir l'aire totale
+            hauteur = max(math.ceil(self.aire_totale / largeur), hauteur_min)
+            aire = largeur * hauteur
 
-                if aire <= self.aire_totale * 1.2:
-                    candidats.append((hauteur, largeur, aire))
-                    candidats.append((largeur, hauteur, aire))
+            if self.aire_totale * 1.008 < aire <= self.aire_totale * 1.15:
+                # Normaliser pour éviter (x, y) et (y, x) (pour dfs, sinon mettre les deux)
+                candidat = tuple(sorted([largeur, hauteur]))
+                candidats.add(candidat)
 
-        candidats.sort(key=lambda x: x[2])
-        return [(largeur, hauteur) for largeur, hauteur, _ in candidats[:max_candidats]]
+        # Tri par aire croissante
+        candidats = sorted(candidats, key=lambda x: (x[0] * x[1]))
+
+        return candidats[:max_candidats]
 
     def trouve_conteneur_optimal(self, ordre="decroissant"):
         """ Trouve le plus petit conteneur possible avec le solveur fourni.

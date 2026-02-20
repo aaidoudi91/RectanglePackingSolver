@@ -1,33 +1,12 @@
 """ Implémentation de l'algorithme Bottom-Left. """
 
-from models.rectangle import Rectangle
 from solvers.base import SolveurBase
 
 
-class BottomLeftPacker(SolveurBase):
+class BottomLeft(SolveurBase):
     """ Prend un conteneur de dimensions fixes et tente d'y placer une liste de rectangles sans chevauchement.
     L'algorithme parcourt chaque rectangle et le positionne à la première position valide trouvée en balayant l'espace
     de bas en haut, puis de gauche à droite. """
-
-    def peut_etre_place(self, rectangle, x, y):
-        """ Vérifie si un rectangle peut être placé à la position (x, y) (= ne dépasse pas et ne chevauche pas). """
-        if x < 0 or y < 0:
-            return False
-        if x + rectangle.largeur > self.largeur_conteneur:
-            return False
-        if y + rectangle.hauteur > self.hauteur_conteneur:
-            return False
-
-        # Crée un rectangle temporaire à cette position
-        # Optimisable : instancie potentiellement beaucoup d'objets en mémoire
-        rect_temp = Rectangle(rectangle.largeur, rectangle.hauteur, rectangle.id)
-        rect_temp.x = x
-        rect_temp.y = y
-        for place in self.rectangles_places:
-            if rect_temp.chevauche(place):
-                return False
-
-        return True
 
     def trouve_bottom_left(self, rect):
         """ Trouve la position Bottom-Left pour placer un rectangle.

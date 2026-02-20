@@ -11,9 +11,24 @@ class SolveurBase(ABC):
 
     @abstractmethod
     def emballe(self, rectangles):
-        """ Tente de placer tous les rectangles dans le conteneur.
-        Retourne True si tous les rectangles ont été placés, False sinon. """
+        """ Tente de placer tous les rectangles dans le conteneur. Retourne True si tous les rectangles sont placés. """
         pass
+
+    def peut_etre_place(self, rectangle, x, y):
+        """ Vérifie si un rectangle peut être placé à la position (x, y) (=> ne dépasse pas et ne chevauche pas). """
+        if x < 0 or y < 0:
+            return False
+        if x + rectangle.largeur > self.largeur_conteneur:
+            return False
+        if y + rectangle.hauteur > self.hauteur_conteneur:
+            return False
+
+        for place in self.rectangles_places:
+            if (x + rectangle.largeur <= place.x or place.x + place.largeur <= x or y + rectangle.hauteur <= place.y or
+                    place.y + place.hauteur <= y) : continue
+            else : return False
+
+        return True
 
     def hauteur_max(self):
         """ Retourne la hauteur maximale utilisée. """
