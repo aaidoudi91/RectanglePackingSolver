@@ -34,7 +34,8 @@ class ChercheurConteneurOptimal:
             aire = largeur * hauteur
 
             if self.aire_totale * 1.008 < aire <= self.aire_totale * 1.15:
-                # Normaliser pour éviter (x, y) et (y, x) (pour dfs, sinon mettre les deux)
+                # Normaliser pour éviter (x, y) et (y, x)
+                # (!!: pour le bottom left, ajouter les deux car ne produisent pas les mêmes résultats)
                 candidat = tuple(sorted([largeur, hauteur]))
                 candidats.add(candidat)
 
@@ -55,7 +56,7 @@ class ChercheurConteneurOptimal:
                 pourcentage_gaspillage = (solveur.espace_perdu() / aire_conteneur) * 100
                 print(f"    Solution trouvée :")
                 print(f"        Conteneur : {largeur}×{hauteur} (aire = {aire_conteneur})")
-                print(f"        Gaspillage : {solveur.espace_perdu()} ({pourcentage_gaspillage:.2f}%)\n")
+                print(f"        Gaspillage : {solveur.espace_perdu()} ({pourcentage_gaspillage:.2f}%)")
                 return (largeur, hauteur), solveur
 
         print("Aucune solution trouvée dans les candidats générés.")

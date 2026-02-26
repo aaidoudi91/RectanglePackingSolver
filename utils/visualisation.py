@@ -1,4 +1,4 @@
-""" Utilitaire de visualisation des solutions provenant d'un solveur quelconque. """
+""" Utilitaire de visualisation des solutions provenant d'un solveur. """
 
 import random
 import numpy as np
