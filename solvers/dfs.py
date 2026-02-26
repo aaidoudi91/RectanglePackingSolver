@@ -4,9 +4,8 @@ from solvers.base import SolveurBase
 
 class DFS(SolveurBase):
     """ Résout le Rectangle Packing par une recherche en profondeur avec backtracking.
-    Garantit une solution si elle existe, au prix d'une complexité exponentielle dans le pire cas.
     Améliorations implémentées :
-        1. Brisure de symétrie    : force le premier rectangle dans le quadrant supérieur gauche.
+        1. Brisure de symétrie    : force le premier rectangle dans le quadrant inférieur gauche.
         2. Élagage par aire       : coupe si l'aire restante dépasse l'espace libre.
         3. Bounding functions     : relaxation 1D de Korf (horizontale + verticale) via algo Martello & Toth.
         4. Incrémentalisme        : mise à jour de l'état du conteneur (évitent de re-calculer l'état global). """
@@ -140,9 +139,9 @@ class DFS(SolveurBase):
         return gaspillage
 
     def _bounding_function(self, rects, index, aire_restante):
-        """ Applique les bounding functions de Korf sans cloner de listes. 
-        Se lit tel que : m'espace disponible dans le conteneur (aire_libre_courante) doit pouvoir accueillir à la fois 
-        l'aire des rectangles restants (aire_restante) et l'espace qui sera forcément gaspillé (waste). Si ce n'est pas 
+        """ Applique les bounding functions de Korf sans cloner de listes.
+        Se lit tel que : m'espace disponible dans le conteneur (aire_libre_courante) doit pouvoir accueillir à la fois
+        l'aire des rectangles restants (aire_restante) et l'espace qui sera forcément gaspillé (waste). Si ce n'est pas
         le cas, la solution est impossible."""
         # Direction horizontale : les bins sont les rangées, les items sont des tranches de largeur
         items_h = self._calcule_items(rects, index, 'horizontale')
@@ -160,7 +159,7 @@ class DFS(SolveurBase):
 
     # 4. DFS
     def _dfs(self, rects, index, aire_restante):
-        """ Fonction récursive du DFS avec backtracking pilotée purement par index. """
+        """ Fonction récursive du DFS avec backtracking. """
         self.noeuds_explores += 1
 
         # Cas de base
@@ -172,7 +171,7 @@ class DFS(SolveurBase):
             self.noeuds_elagages_aire += 1
             return False
 
-        # Élagage par bounding function de Korf (on passe la liste complète et l'index actuel)
+        # Élagage par bounding function (on passe la liste complète et l'index actuel)
         if self._bounding_function(rects, index, aire_restante):
             self.noeuds_elagages_bf += 1
             return False
@@ -182,9 +181,7 @@ class DFS(SolveurBase):
 
         # Exploration via le générateur
         for x, y in self._positions_candidates_generateur(rect_courant):
-
             self._placer(rect_courant, x, y)
-
             if self._dfs(rects, index + 1, nouvelle_aire_restante):
                 return True
 
@@ -220,7 +217,7 @@ class DFS(SolveurBase):
         return self._dfs(rects_a_placer, 0, aire_totale)
 
     def affiche_stats(self):
-        """ Affiche les statistiques de la recherche. """
+        """ Affiche les statistiques de la recherche. (À débug/revoir)"""
         total_elagages = self.noeuds_elagages_aire + self.noeuds_elagages_sym + self.noeuds_elagages_bf
         print(f"        Noeuds explorés      : {self.noeuds_explores}")
         print(f"        Élagages aire        : {self.noeuds_elagages_aire}")
