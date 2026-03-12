@@ -1,3 +1,5 @@
+""" Modèle des segments de la skyline. """
+
 class Segment:
     """ Représente un segment horizontal de la skyline.
     Un segment (x, largeur, hauteur) signifie que la zone [x, x+largeur[ est remplie jusqu'à 'hauteur'. """
