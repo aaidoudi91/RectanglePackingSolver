@@ -143,7 +143,7 @@ class DFS_PRP(SolveurBase):
         return False
 
 
-    def emballe(self, rectangles, ordre="decroissant"):
+    def emballe(self, rectangles, ordre="croissant"):
         """ Tente de résoudre l'instance PRP. """
         self.rectangles_places = []
         self.noeuds_explores = 0
@@ -154,12 +154,12 @@ class DFS_PRP(SolveurBase):
         self.skyline = Skyline(self.largeur_conteneur, self.hauteur_conteneur)
 
         for rectangle in rectangles: rectangle.reset_position()
-        rects_a_placer = list(rectangles)
+        rectangles_a_placer = list(rectangles)
         if ordre == "decroissant":
-            rects_a_placer.sort(key=lambda r: r.aire(), reverse=True)
+            rectangles_a_placer.sort(key=lambda r: r.aire(), reverse=True)
         elif ordre == "croissant":
-            rects_a_placer.sort(key=lambda r: r.aire())
-        return self._dfs(rects_a_placer, len(rects_a_placer), True)
+            rectangles_a_placer.sort(key=lambda r: r.aire())
+        return self._dfs(rectangles_a_placer, len(rectangles_a_placer), True)
 
     def affiche_stats(self):
         total = (self.elagages_vallee_vide + self.elagages_aire +
