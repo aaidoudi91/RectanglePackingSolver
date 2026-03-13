@@ -14,7 +14,7 @@ class DFS(SolveurBase):
         super().__init__(largeur, hauteur)
         self.noeuds_explores = 0
         self.noeuds_elagages_aire = 0
-        self.noeuds_elagages_sym = 0
+        self.positions_ignorees_sym = 0
         self.noeuds_elagages_bf = 0
 
         self.aire_libre_courante = largeur * hauteur
@@ -49,7 +49,7 @@ class DFS(SolveurBase):
             # Calcul du nombre de positions ignorées par la symétrie (pour stats)
             coupes_x = (limite_x - limite_x_sym) * (limite_y + 1)
             coupes_y = (limite_y - limite_y_sym) * (limite_x_sym + 1)
-            self.noeuds_elagages_sym += (coupes_x + coupes_y)
+            self.positions_ignorees_sym += (coupes_x + coupes_y)
 
             limite_x = limite_x_sym
             limite_y = limite_y_sym
@@ -195,7 +195,7 @@ class DFS(SolveurBase):
         self.rectangles_places = []
         self.noeuds_explores = 0
         self.noeuds_elagages_aire = 0
-        self.noeuds_elagages_sym = 0
+        self.positions_ignorees_sym = 0
         self.noeuds_elagages_bf = 0
 
         self.aire_libre_courante = self.largeur_conteneur * self.hauteur_conteneur
@@ -217,11 +217,12 @@ class DFS(SolveurBase):
         return self._dfs(rects_a_placer, 0, aire_totale)
 
     def affiche_stats(self):
-        """ Affiche les statistiques de la recherche. (À débug/revoir)"""
-        total_elagages = self.noeuds_elagages_aire + self.noeuds_elagages_sym + self.noeuds_elagages_bf
-        print(f"        Noeuds explorés      : {self.noeuds_explores}")
-        print(f"        Élagages aire        : {self.noeuds_elagages_aire}")
-        print(f"        Élagages symétrie    : {self.noeuds_elagages_sym}")
-        print(f"        Élagages bounding f. : {self.noeuds_elagages_bf}")
+        """ Affiche les statistiques de la recherche. """
+        elagages_noeuds = self.noeuds_elagages_aire + self.noeuds_elagages_bf
+        print(f"    Noeuds explorés : {self.noeuds_explores}")
+        print(f"    Élagages aire : {self.noeuds_elagages_aire}")
+        print(f"    Élagages bounding function : {self.noeuds_elagages_bf}")
         if self.noeuds_explores > 0:
-            print(f"        Taux d'élagage      : {100 * total_elagages / self.noeuds_explores:.1f}%")
+            taux = 100 * elagages_noeuds / self.noeuds_explores
+            print(f"    Taux d'élagage (nœuds) : {taux:.1f}%")
+        print(f"    Positions ignorées (symétrie): {self.positions_ignorees_sym}")
