@@ -17,7 +17,7 @@ complexes, ainsi qu'un solveur dédié au PRP.
 ## Architecture
 
 ```text
-rectangle_packing/
+RectanglePackingSolver/
 ├── models/
 │   ├── rectangle.py           # Représentation géométrique d'un rectangle
 │   └── segment.py             # Représentation géométrique d'un segment
