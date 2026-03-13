@@ -54,9 +54,8 @@ class ChercheurConteneurOptimal:
             if solveur.emballe(self.rectangles, ordre=ordre):
                 aire_conteneur = largeur * hauteur
                 pourcentage_gaspillage = (solveur.espace_perdu() / aire_conteneur) * 100
-                print(f"    Solution trouvée :")
-                print(f"        Conteneur : {largeur}×{hauteur} (aire = {aire_conteneur})")
-                print(f"        Gaspillage : {solveur.espace_perdu()} ({pourcentage_gaspillage:.2f}%)")
+                print(f"    Conteneur : {largeur}×{hauteur} (aire = {aire_conteneur})")
+                print(f"    Gaspillage : {solveur.espace_perdu()} ({pourcentage_gaspillage:.2f}%)")
                 return (largeur, hauteur), solveur
 
         print("Aucune solution trouvée dans les candidats générés.")
