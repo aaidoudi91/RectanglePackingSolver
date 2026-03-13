@@ -39,8 +39,6 @@ class BenchmarkPartridge:
     def affiche_info(self):
         """ Affiche les informations de l'instance. """
         print(f"Benchmark Partridge (Hougardy) : n={self.n}")
-        print(f"    Conteneur          : {self.cote_conteneur}×{self.cote_conteneur} "
+        print(f"    Conteneur : {self.cote_conteneur}×{self.cote_conteneur} "
               f"(aire = {self.aire_totale})")
-        print(f"    Nombre de carrés   : {self.nombre_rectangles()}")
-        print(f"    Composition        : "
-              + ", ".join(f"{i}×({i}×{i})" for i in range(1, self.n + 1)))
+        print(f"    Nombre de carrés : {self.nombre_rectangles()}")
