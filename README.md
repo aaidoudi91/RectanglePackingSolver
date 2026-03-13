@@ -21,6 +21,7 @@ RectanglePackingSolver/
 ├── models/
 │   ├── rectangle.py           # Représentation géométrique d'un rectangle
 │   └── segment.py             # Représentation géométrique d'un segment
+│ 
 ├── benchmarks/
 │   ├── korf.py                # Benchmark de Korf
 │   ├── prp_generator.py       # Générateur d'instances PRP par guillotine cut
