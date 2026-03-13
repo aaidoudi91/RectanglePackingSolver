@@ -14,7 +14,9 @@ class DFS_PRP(SolveurBase):
     def __init__(self, largeur, hauteur):
         super().__init__(largeur, hauteur)
         self.skyline = Skyline(largeur, hauteur)
+
         self.noeuds_explores = 0
+        self.candidats_evalues = 0
         self.elagages_vallee_vide = 0  # aucun rect compatible avec la vallée
         self.elagages_aire = 0  # règle 1 : aire insuffisante
         self.elagages_propagation = 0  # règle 3 : une autre vallée est insolvable
@@ -113,23 +115,24 @@ class DFS_PRP(SolveurBase):
         candidats = candidats_dedupliques
 
         for idx in candidats:
-            rect = rectangles[idx]
+            self.candidats_evalues += 1
+            rectangle = rectangles[idx]
 
-            if not self._regle2_symetrie(rect, x_vallee, premier_placement):  # règle 2
+            if not self._regle2_symetrie(rectangle, x_vallee, premier_placement):  # règle 2
                 continue
 
-            largeur_restante = largeur_dispo - rect.largeur
+            largeur_restante = largeur_dispo - rectangle.largeur
             if not self._regle4_dead_space(rectangles, n, idx, largeur_restante, hauteur_dispo):  # règle 4
                 self.elagages_espace_residuel += 1
                 continue
 
             # Placement et swap pour retirer idx des non-placés
             rectangles[idx], rectangles[n-1] = rectangles[n-1], rectangles[idx]
-            self._placer(rect, x_vallee, hauteur_v)
+            self._placer(rectangle, x_vallee, hauteur_v)
 
             if not self._regle3_propagation_globale(rectangles, n-1):  # règle 3
                 self.elagages_propagation += 1
-                self._enlever(rect)
+                self._enlever(rectangle)
                 rectangles[idx], rectangles[n-1] = rectangles[n-1], rectangles[idx]
                 continue
 
@@ -137,7 +140,7 @@ class DFS_PRP(SolveurBase):
                 return True
 
             # Backtracking
-            self._enlever(rect)
+            self._enlever(rectangle)
             rectangles[idx], rectangles[n-1] = rectangles[n-1], rectangles[idx]
 
         return False
@@ -146,6 +149,7 @@ class DFS_PRP(SolveurBase):
     def emballe(self, rectangles, ordre="croissant"):
         """ Tente de résoudre l'instance PRP. """
         self.rectangles_places = []
+        self.candidats_evalues = 0
         self.noeuds_explores = 0
         self.elagages_vallee_vide = 0
         self.elagages_aire = 0
@@ -162,12 +166,18 @@ class DFS_PRP(SolveurBase):
         return self._dfs(rectangles_a_placer, len(rectangles_a_placer), True)
 
     def affiche_stats(self):
-        total = (self.elagages_vallee_vide + self.elagages_aire +
-                 self.elagages_propagation + self.elagages_espace_residuel)
-        print(f"        Noeuds explorés         : {self.noeuds_explores}")
-        print(f"        Élagages vallée vide     : {self.elagages_vallee_vide}")
-        print(f"        Élagages aire (R1)       : {self.elagages_aire}")
-        print(f"        Élagages propagation (R3): {self.elagages_propagation}")
-        print(f"        Élagages dead space (R4) : {self.elagages_espace_residuel}")
+        elagages_noeuds = self.elagages_vallee_vide + self.elagages_aire
+        elagages_candidats = self.elagages_propagation + self.elagages_espace_residuel
+
+        print(f"    Noeuds explorés : {self.noeuds_explores}")
+        print(f"    Candidats évalués : {self.candidats_evalues}")
+        print(f"    Élagages nœuds Vallée vide : {self.elagages_vallee_vide}")
+        print(f"    Élagages nœuds Aire insuffisante : {self.elagages_aire}")
         if self.noeuds_explores > 0:
-            print(f"        Taux d'élagage total    : {100 * total / self.noeuds_explores:.1f}%")
+            taux_noeuds = 100 * elagages_noeuds / self.noeuds_explores
+            print(f"    Taux élagage nœuds : {taux_noeuds:.1f}%")
+        print(f"    Élagages candidats Espace résiduel : {self.elagages_espace_residuel}")
+        print(f"    Élagages candidats Propagation globale : {self.elagages_propagation}")
+        if self.candidats_evalues > 0:
+            taux_candidats = 100 * elagages_candidats / self.candidats_evalues
+            print(f"    Taux rejet candidats : {taux_candidats:.1f}%")
