@@ -19,16 +19,19 @@ complexes, ainsi qu'un solveur dédié au PRP.
 ```text
 rectangle_packing/
 ├── models/
-│   └── rectangle.py           # Représentation géométrique d'un rectangle
+│   ├── rectangle.py           # Représentation géométrique d'un rectangle
+│   └── segment.py             # Représentation géométrique d'un segment
 ├── benchmarks/
 │   ├── korf.py                # Benchmark de Korf
-│   └── prp_generator.py       # Générateur d'instances PRP par guillotine cut
+│   ├── prp_generator.py       # Générateur d'instances PRP par guillotine cut
+│   └── partridge.py           # Benchmark de Partridge 
 │ 
 ├── solvers/
 │   ├── base.py                # Interface abstraite
 │   ├── bottom_left.py         # Solveur Heuristique via Bottom-Left
-│   ├── dfs.py                 # Solveur exact via DFS avec backtracking optimisé
-│   └── dfs_prp.py             # Solveur exact via DFS avec backtracking optimisé pour le Perfect Rectangle Packing
+│   ├── dfs.py                 # Solveur exact via DFS avec backtracking optimisé (RP général)
+│   └── dfs_prp.py             # Solveur exact via DFS avec Skyline (PRP)
+│ 
 ├── utils/
 │   ├── visualisation.py       # Rendu graphique via Matplotlib
 │   ├── skyline.py             # Structure de données Skyline incrémentale
@@ -44,24 +47,21 @@ rectangle_packing/
 ## Algorithmes implémentés
 
 ### 1. Heuristique Bottom-Left
-
 Une approche gloutonne rapide permettant de trouver des solutions initiales ou de traiter de très grandes instances 
 où la preuve d'optimalité n'est pas requise. Trie les rectangles généralement par aire décroissante et place chacun 
 d'eux à la position valide la plus basse, puis la plus à gauche possible.
 
-
 ### 2. DFS Branch-and-Bound - RP général
-
 Une recherche exhaustive en profondeur pour le Rectangle Packing général. Ce solveur garantit de trouver le conteneur optimal absolu (ou de prouver qu'un 
 conteneur donné est irréalisable). Pour contrer l'explosion combinatoire inhérente au problème NP-difficile, 
 ce moteur intègre des techniques d'élagage tirées de la littérature scientifique :
 
-* **Brisure de symétrie** — force le 1er rectangle dans le quadrant inférieur gauche.
-* **Élagage par aire** — coupe si l'aire restante > espace libre.
-* **Bounding functions de Korf** — relaxation 1D (Martello & Toth) horizontale + verticale.
-* **États incrémentaux** —  mise à jour de l'état du conteneur, évitant de re-calculer l'état global.
-* **Zéro copie** — parcours par index, aucune sous-liste allouée.
-* **Sauts maximaux** — saut direct au bord droit du rectangle bloquant le plus loin.
+* **Brisure de symétrie** : force le 1er rectangle dans le quadrant inférieur gauche.
+* **Élagage par aire** : coupe si l'aire restante > espace libre.
+* **Bounding functions de Korf** : relaxation 1D (Martello & Toth) horizontale + verticale.
+* **États incrémentaux** : mise à jour de l'état du conteneur, évitant de re-calculer l'état global.
+* **Zéro copie** : parcours par index, aucune sous-liste allouée.
+* **Sauts maximaux** : saut direct au bord droit du rectangle bloquant le plus loin.
 
 ### 3. DFS Skyline - PRP
 Un solveur dédié aux instances de Perfect Rectangle Packing (gaspillage nul imposé), exploitant la règle de branchement de
@@ -69,12 +69,35 @@ Bitner-Reingold via une structure Skyline incrémentale. La position du prochain
 rectangle est imposée par la vallée la plus étroite de la skyline — si aucun rectangle ne peut
 la remplir, on backtrack immédiatement. Les règles de pruning de Hougardy (2012) complètent le dispositif :
 
-* **Règle 1** — l'aire des rectangles compatibles doit couvrir la vallée.
-* **Règle 2** — brisure de symétrie sur le premier placement.
-* **Règle 3** — toutes les vallées de la skyline doivent être couvrables simultanément.
-* **Règle 4** — l'espace résiduel après placement doit pouvoir être couvert.
-* **Brisure des doublons** — k rectangles identiques → 1 seule tentative au lieu de k! (Simonis & O'Sullivan, 2008).
+* **Règle 1** : l'aire des rectangles compatibles doit couvrir la vallée.
+* **Règle 2** : brisure de symétrie sur le premier placement.
+* **Règle 3** : toutes les vallées de la skyline doivent être couvrables simultanément.
+* **Règle 4** : l'espace résiduel après placement doit pouvoir être couvert.
+* **Brisure des doublons** : k rectangles identiques → 1 seule tentative au lieu de k! (Simonis & O'Sullivan, 2008).
 
+## Benchmarks et Évaluation
+Le solveur est évalué sur plusieurs jeux de données standardisés, couvrant des
+difficultés croissantes et des structures de problèmes différentes.
+
+* **Benchmark de Korf** : Introduit par Richard Korf en 2003, ce benchmark consiste à emballer les carrés
+consécutifs $1 \times 1$, $2 \times 2$, ..., $N \times N$ dans un rectangle de
+surface minimale. 
+
+* **Benchmark de Partridge** : Le problème de Partridge est un cas particulier de PRP,
+pour un entier $n \geq 8$, on dispose de $i$ copies du carré $i \times i$ pour
+chaque $i \in \{1, \ldots, n\}$, et l'objectif est de les placer parfaitement
+dans un carré de côté $T = \frac{n(n+1)}{2}$. 
+
+* **Générateur PRP** : Pour évaluer le solveur PRP sur des instances contrôlées, un générateur
+d'instances aléatoires est implémenté via des **découpes guillotine équilibrées**.
+Le conteneur est découpé récursivement en deux sous-rectangles selon une
+direction alternée (verticale/horizontale) et une position de coupe tirée
+aléatoirement.
+Le générateur est paramétrable : dimensions du conteneur, nombre de rectangles
+cibles, plage de coupe (`ratio_min`) et force de l'alternance
+(`biais_alternance`). Les instances difficiles sont obtenues avec de grands
+conteneurs, un faible `ratio_min` et une alternance stricte, ce qui minimise les doublons de dimensions et réduit
+l'efficacité des optimisations.
 
 ## Installation & Démarrage
 
