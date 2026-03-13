@@ -110,9 +110,8 @@ class GenerateurPRP:
         dims = [f"{r.largeur}×{r.hauteur}" for r in self.rectangles]
         doublons = len(dims) - len(set(dims))
 
-        print(f"Instance Perfect Rectangle Packing : Conteneur {self.largeur_conteneur}×{self.hauteur_conteneur} - "
-              f"{len(self.rectangles)} Rectangles")
+        #print(f"Instance Perfect Rectangle Packing : Conteneur {self.largeur_conteneur}×{self.hauteur_conteneur} - "
+        #      f"{len(self.rectangles)} Rectangles")
         print(f"    Aires : min={min(aires)}, max={max(aires)}, moyenne={sum(aires)/len(aires):.1f}")
         print(f"    Doublons : {doublons} paires de dimensions identiques")
         print(f"    Dimensions : " + ", ".join(dims))
-        
