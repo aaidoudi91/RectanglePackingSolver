@@ -5,10 +5,10 @@ from solvers.base import SolveurBase
 class DFS(SolveurBase):
     """ Résout le Rectangle Packing par une recherche en profondeur avec backtracking.
     Améliorations implémentées :
-        1. Brisure de symétrie    : force le premier rectangle dans le quadrant inférieur gauche.
-        2. Élagage par aire       : coupe si l'aire restante dépasse l'espace libre.
-        3. Bounding functions     : relaxation 1D de Korf (horizontale + verticale) via algo Martello & Toth.
-        4. Incrémentalisme        : mise à jour de l'état du conteneur (évitent de re-calculer l'état global). """
+        1. Brisure de symétrie : force le premier rectangle dans le quadrant inférieur gauche.
+        2. Élagage par aire : coupe si l'aire restante dépasse l'espace libre.
+        3. Bounding functions : relaxation 1D de Korf (horizontale + verticale) via algo Martello & Toth.
+        4. Incrémentalisme : mise à jour de l'état du conteneur (évitent de re-calculer l'état global). """
 
     def __init__(self, largeur, hauteur):
         super().__init__(largeur, hauteur)

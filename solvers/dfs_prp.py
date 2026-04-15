@@ -6,10 +6,10 @@ from utils.skyline import Skyline
 
 class DFS_PRP(SolveurBase):
     """ Résout le Perfect Rectangle Packing par DFS avec backtracking et les règles de Hougardy:
-            Règle 1 : Valley Area Check - l'aire des rectangles compatibles doit couvrir la vallée.
-            Règle 2 : Brisure de symétrie - le premier rect reste dans la moitié gauche.
-            Règle 3 : Propagation globale - toutes les vallées doivent être couvrables.
-            Règle 4 : Dead space check - l'espace résiduel de la vallée doit être couvert. """
+            Règle 1. Valley Area Check : l'aire des rectangles compatibles doit couvrir la vallée.
+            Règle 2. Brisure de symétrie : le premier rect reste dans la moitié gauche.
+            Règle 3. Propagation globale : toutes les vallées doivent être couvrables.
+            Règle 4. Dead space check : l'espace résiduel de la vallée doit être couvert. """
 
     def __init__(self, largeur, hauteur):
         super().__init__(largeur, hauteur)

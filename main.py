@@ -20,17 +20,17 @@ from utils.conteneur_optimal import ChercheurConteneurOptimal
 from utils.visualisation import visualise_solution
 
 
-MODE = "PARTRIDGE"  # Choix parmi les 4 modes listés ci-dessus
+MODE = "PRP"  # Choix parmi les 4 modes listés ci-dessus
 
-CONFIG_KORF_BL = {"valeurs_n" : [10, 13, 15], "visualiser" : True}
+CONFIG_KORF_BL = {"valeurs_n" : [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15], "visualiser" : True}
 
-CONFIG_KORF_DFS = {"valeurs_n" : [10, 11, 12], "visualiser" : True}
+CONFIG_KORF_DFS = {"valeurs_n" : [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16], "visualiser" : True}
 
 # (nom, largeur, hauteur, nb_cibles, seed, ratio_min, biais_alt)
-CONFIG_PRP = [("5", 30, 20, 15, 42, 0.15, 0.8), ("15", 40, 30, 20, 42, 0.15, 0.8), ("20", 60, 40, 30, 42, 0.2, 0.5)]
-PRP_VISUALISER, PRP_COMPARER_DFS = True, False
+CONFIG_PRP = [ ("15", 30, 20, 15, 42, 0.10, 1), ("20", 40, 30, 25, 42, 0.3, 0.9), ("30", 60, 40, 30, 42, 0.12, 0.9)]
+PRP_VISUALISER, PRP_COMPARER_DFS = True, True
 
-CONFIG_PARTRIDGE = {"valeurs_n" : [5, 8, 9], "visualiser" : True}
+CONFIG_PARTRIDGE = {"valeurs_n" : [2, 3, 4, 5, 6, 7, 8, 9, 10, 11], "visualiser" : True}
 PARTRIDGE_VISUALISER, PARTRIDGE_COMPARER_DFS = True, False
 
 
@@ -60,7 +60,8 @@ def executer_korf(n, classe_solveur, nom_solveur, visualiser=True):
     duree = time.perf_counter() - debut
     if solveur and visualiser:
         print(f"    Solution trouvée en {duree:.4f}s")
-        solveur.affiche_stats()
+        if hasattr(solveur, 'affiche_stats'):
+            solveur.affiche_stats()
         visualise_solution(solveur, titre=f"Benchmark Korf N={n} - {nom_solveur}")
 
 def executer_prp(nom, largeur, hauteur, nb_cibles, seed, ratio_min, biais_alt, visualiser=True, comparer_dfs=True):

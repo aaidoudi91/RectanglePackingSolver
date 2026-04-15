@@ -1,6 +1,6 @@
 # Rectangle Packing Solver
 
-Implémentation robuste et optimisée pour la résolution du **2D Rectangle Packing Problem**, 
+Implémentation optimisée pour la résolution du **2D Rectangle Packing Problem**, 
 un problème d'optimisation combinatoire NP-difficile. L'objectif est de placer un ensemble de rectangles de dimensions 
 hétérogènes dans un conteneur englobant minimal, sans aucun chevauchement. 
 
@@ -42,7 +42,7 @@ RectanglePackingSolver/
 │ 
 ├── requirements.txt   
 ├── README.md                  
-└── Rapport.pdf    
+└── Memoire.pdf    
 ```
 
 ## Algorithmes implémentés
@@ -56,7 +56,6 @@ d'eux à la position valide la plus basse, puis la plus à gauche possible.
 Une recherche exhaustive en profondeur pour le Rectangle Packing général. Ce solveur garantit de trouver le conteneur optimal absolu (ou de prouver qu'un 
 conteneur donné est irréalisable). Pour contrer l'explosion combinatoire inhérente au problème NP-difficile, 
 ce moteur intègre des techniques d'élagage tirées de la littérature scientifique :
-
 * **Brisure de symétrie** : force le 1er rectangle dans le quadrant inférieur gauche.
 * **Élagage par aire** : coupe si l'aire restante > espace libre.
 * **Bounding functions de Korf** : relaxation 1D (Martello & Toth) horizontale + verticale.
@@ -67,9 +66,8 @@ ce moteur intègre des techniques d'élagage tirées de la littérature scientif
 ### 3. DFS Skyline - PRP
 Un solveur dédié aux instances de Perfect Rectangle Packing (gaspillage nul imposé), exploitant la règle de branchement de
 Bitner-Reingold via une structure Skyline incrémentale. La position du prochain
-rectangle est imposée par la vallée la plus étroite de la skyline — si aucun rectangle ne peut
+rectangle est imposée par la vallée la plus étroite de la skyline, si aucun rectangle ne peut
 la remplir, on backtrack immédiatement. Les règles de pruning de Hougardy (2012) complètent le dispositif :
-
 * **Règle 1** : l'aire des rectangles compatibles doit couvrir la vallée.
 * **Règle 2** : brisure de symétrie sur le premier placement.
 * **Règle 3** : toutes les vallées de la skyline doivent être couvrables simultanément.
@@ -108,7 +106,7 @@ Prérequis : Python 3.8+. Pour la visualisation : Matplotlib & Numpy.
 # Installer les dépendances
 pip install -r requirements.txt
 
-# Lancer le solveur sur les benchmarks par défaut
+# Lancer le solveur (benchmark et solveur à choisir dans le main)
 python main.py
 ```
 
@@ -125,6 +123,6 @@ Les optimisations implémentées dans ce solveur s'appuient sur les travaux de r
 ## Auteur
 Aidoudi Aaron
 
-Projet TER - Master 1 Intelligence Artificielle Distribuée à l'Université Paris Cité
+Projet TER, encadré par Mr. Bruno Bouzy - Master 1 Intelligence Artificielle Distribuée à l'Université Paris Cité
 
 Année Universitaire 2025-2026
